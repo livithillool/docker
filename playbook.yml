@@ -1,0 +1,17 @@
+---
+- hosts: webserver
+  remote_user: jenkins
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Install pip
+      yum: name=python-pip state=present
+    - name: install docker-py package
+      pip: name=docker-py
+    - name: run the site in a docker container
+      docker_container:
+        name: nodejs
+        image: shruthi1/nodejs-1 + ":$BUILD_NUMBER"
+        state: started
+        ports:
+         - "8083:8080"
